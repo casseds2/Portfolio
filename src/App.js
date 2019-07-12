@@ -1,43 +1,40 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Typist from 'react-typist';
 import bitmoji from './assets/img/svg/bitmoji.png';
 import placeholderImage from './assets/img/placeholder.jpg';
 import { functions, firestore } from './api';
 
-class Loader extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      loaded: false
-    };
-  }
+const Loader = () => {
+  const [loaded, setLoaded] = useState(false);
 
-  componentDidMount() {
+  useEffect(() => {
     setTimeout(() => {
-      this.setState({
-        loaded: true
-      });
+      setLoaded(true);
     }, 2000);
-  }
+  }, []);
 
-  render() {
-    return (
-      <div>
-        <div id="arlo_tm_popup_blog">
-          <div className="container">
-            <div className="inner_popup scrollable"></div>
-            <span className="close"></span>
-          </div>
+  return (
+    <div>
+      <div id="arlo_tm_popup_blog">
+        <div className="container">
+          <div className="inner_popup scrollable"></div>
+          <span className="close"></span>
         </div>
-        <div className={this.state.loaded ? 'loaded' : 'arlo_tm_preloader'}>
+      </div>
+      {loaded ? (
+        <div className="loaded"></div>
+      ) : (
+        <div className="arlo_tm_preloader">
           <div className="spinner_wrap">
             <div className="spinner"></div>
           </div>
         </div>
-      </div>
-    );
-  }
-}
+      )}
+    </div>
+  );
+};
 
 const MobileMenu = () => (
   <div className="arlo_tm_mobile_header_wrap">
@@ -88,6 +85,9 @@ const Sidebar = () => (
             <a href="#technology">Technology</a>
           </li>
           <li>
+            <a href="#articles">Articles</a>
+          </li>
+          <li>
             <a href="#contact">Contact</a>
           </li>
         </ul>
@@ -123,7 +123,7 @@ const Sidebar = () => (
 );
 
 const cursorOptions = {
-  show: false
+  show: false,
 };
 
 const TypedText = () => (
@@ -154,10 +154,7 @@ const Intro = () => (
       <div className="arlo_tm_universal_box_wrap">
         <div className="bg_wrap">
           <div className="overlay_image hero jarallax" data-speed="0.1"></div>
-          <div
-            className="overlay_color hero"
-            style={{ backgroundColor: '#dedfe0' }}
-          ></div>
+          <div className="overlay_color hero"></div>
         </div>
         <div className="content hero">
           <div className="inner_content">
@@ -217,7 +214,7 @@ const About = () => (
                   passionate and dedicated to my work. With less than two years
                   experience of fullstack development, I have acquired many
                   skills required to build richly featured products. I currently
-                  work at{' '}
+                  work at
                   <a href="https://www.cellusys.com/">
                     <strong>Cellusys</strong>
                   </a>
@@ -236,7 +233,7 @@ const About = () => (
                   </li>
                   <li>
                     <span>
-                      <label>Age:</label>23
+                      <label>Age:</label>24
                     </span>
                   </li>
                   <li>
@@ -256,12 +253,12 @@ const About = () => (
                   </li>
                   <li>
                     <span>
-                      <label>Degree:</label> Undergraduate (2:1)
+                      <label>Degree:</label> BSc. In Computer Applications (2:1)
                     </span>
                   </li>
                   <li>
                     <span>
-                      <label>Mail:</label>{' '}
+                      <label>Mail:</label>
                       <a href="mailto:casseds95@gmail.com">
                         casseds95@gmail.com
                       </a>
@@ -316,60 +313,120 @@ const TechItem = ({ img, title, body }) => (
   </li>
 );
 
-class TechList extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      technologies: []
-    };
-  }
+TechItem.propTypes = {
+  img: PropTypes.string,
+  title: PropTypes.string,
+  body: PropTypes.string,
+};
 
-  componentDidMount() {
+const TechList = () => {
+  const [technologies, setTechnologies] = useState([]);
+
+  useEffect(() => {
     firestore
       .fetchTechnologies()
       .then(data => {
-        this.setState({
-          technologies: data
-        });
+        setTechnologies(data);
       })
       .catch(err => {
         console.log(err);
       });
-  }
+  }, []);
 
-  render() {
-    return (
-      <div className="arlo_tm_section" id="technology">
-        <div className="arlo_tm_services_wrap">
-          <div className="container">
-            <div className="arlo_tm_title_holder">
-              <h3>Technology Stack</h3>
-              <span>Some tech I work with!</span>
-            </div>
-            <div className="list_wrap">
-              <ul>
-                {this.state.technologies.map((item, index) => {
-                  const { img, title, body } = item;
-                  return (
-                    <TechItem key={index} img={img} title={title} body={body} />
-                  );
-                })}
-              </ul>
-            </div>
+  return (
+    <div className="arlo_tm_section" id="technology">
+      <div className="arlo_tm_services_wrap">
+        <div className="container">
+          <div className="arlo_tm_title_holder">
+            <h3>Technology Stack</h3>
+            <span>Some tech I work with!</span>
+          </div>
+          <div className="list_wrap">
+            <ul>
+              {technologies.map((technology, index) => {
+                return <TechItem key={index} {...technology} />;
+              })}
+            </ul>
           </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
+const Article = ({ title, url, description, timestamp }) => {
+  return (
+    <li className="wow fadeInUp">
+      <div className="inner_list">
+        <div className="definitions_wrap">
+          <div className="date_wrap">
+            <p>{new Date(timestamp.seconds * 1000).toDateString()}</p>
+          </div>
+          <div className="title_holder">
+            <strong>{title}</strong>
+          </div>
+          <div className="definition">
+            <p>{description}</p>
+          </div>
+          <div className="read_more">
+            <a href={url}>
+              <span>Read Mo</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+};
+
+Article.propTypes = {
+  title: PropTypes.string,
+  url: PropTypes.string,
+  description: PropTypes.string,
+  timestamp: PropTypes.object,
+};
+
+const Articles = () => {
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    firestore
+      .fetchArticles()
+      .then(data => {
+        setArticles(data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
+
+  return (
+    <div className="arlo_tm_section" id="articles">
+      <div className="arlo_tm_news_wrap">
+        <div className="container">
+          <div className="arlo_tm_title_holder news">
+            <h3>Interesting Articles</h3>
+            <span>Check out some articles I liked!</span>
+          </div>
+          <div className="arlo_tm_list_wrap blog_list">
+            <ul className="total">
+              {articles.map((article, index) => {
+                return <Article {...article} key={index} />;
+              })}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 class Footer extends React.Component {
   constructor() {
     super();
     this.state = {
       name: '',
       senderEmail: '',
-      message: ''
+      message: '',
     };
   }
 
@@ -397,7 +454,7 @@ class Footer extends React.Component {
   updateField = event => {
     this.setState({
       ...this.state,
-      [event.target.id]: event.target.value
+      [event.target.id]: event.target.value,
     });
   };
 
@@ -524,6 +581,7 @@ const App = () => (
           <Intro />
           <About />
           <TechList />
+          <Articles />
           <Footer />
         </div>
       </div>
