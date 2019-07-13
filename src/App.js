@@ -61,6 +61,9 @@ const MobileMenu = () => (
             <a href="#technology">Technology</a>
           </li>
           <li>
+            <a href="#articles">Articles</a>
+          </li>
+          <li>
             <a href="#contact">Contact</a>
           </li>
         </ul>
@@ -185,7 +188,6 @@ const About = () => (
       <div className="container">
         <div className="arlo_tm_title_holder">
           <h3>About Me</h3>
-          <span>Main information about me</span>
         </div>
         <div className="arlo_tm_about_wrap">
           <div className="author_wrap">
@@ -214,7 +216,7 @@ const About = () => (
                   passionate and dedicated to my work. With less than two years
                   experience of fullstack development, I have acquired many
                   skills required to build richly featured products. I currently
-                  work at
+                  work at{' '}
                   <a href="https://www.cellusys.com/">
                     <strong>Cellusys</strong>
                   </a>
@@ -370,7 +372,7 @@ const Article = ({ title, url, description, timestamp }) => {
           </div>
           <div className="read_more">
             <a href={url}>
-              <span>Read Mo</span>
+              <span>Read Me</span>
             </a>
           </div>
         </div>
@@ -404,14 +406,14 @@ const Articles = () => {
     <div className="arlo_tm_section" id="articles">
       <div className="arlo_tm_news_wrap">
         <div className="container">
-          <div className="arlo_tm_title_holder news">
-            <h3>Interesting Articles</h3>
+          <div className="arlo_tm_title_holder">
+            <h3>Articles</h3>
             <span>Check out some articles I liked!</span>
           </div>
           <div className="arlo_tm_list_wrap blog_list">
             <ul className="total">
               {articles.map((article, index) => {
-                return <Article {...article} key={index} />;
+                return <Article key={index} {...article} />;
               })}
             </ul>
           </div>

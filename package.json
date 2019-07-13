@@ -5,6 +5,7 @@
   "dependencies": {
     "bluebird": "^3.5.5",
     "firebase": "^6.3.0",
+    "firebase-functions": "^3.1.0",
     "husky": "^2.7.0",
     "lint-staged": "^8.2.1",
     "prop-types": "^15.7.2",
